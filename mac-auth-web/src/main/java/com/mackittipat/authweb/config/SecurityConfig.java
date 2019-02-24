@@ -1,5 +1,8 @@
 package com.mackittipat.authweb.config;
 
+import com.mackittipat.authweb.web.MainController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,6 +18,8 @@ import java.io.IOException;
 
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private final static Logger log = LoggerFactory.getLogger(SecurityConfig.class);
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -37,9 +42,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private void loginSuccessHandler(HttpServletRequest httpServletRequest,
                                      HttpServletResponse httpServletResponse,
                                      Authentication authentication) throws IOException {
+
         Cookie cookie = new Cookie("authenticationSuccess", "true");
         httpServletResponse.addCookie(cookie);
-        httpServletResponse.sendRedirect("/");
+
+        String redirectUrl = httpServletRequest.getParameter("redirectUrl");
+        if(redirectUrl != null && !"".equals(redirectUrl)) {
+            httpServletResponse.sendRedirect(redirectUrl);
+        } else {
+            httpServletResponse.sendRedirect("/");
+        }
     }
 
 //    @Bean
