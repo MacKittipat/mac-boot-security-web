@@ -29,7 +29,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin()
                 .loginPage("/login")
-                .successHandler(this::loginSuccessHandler);
+                .successHandler(this::loginSuccessHandler)
+                .and()
+                .logout()
+                .deleteCookies("loginSuccess");
     }
 
     @Override
@@ -43,7 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                                      HttpServletResponse httpServletResponse,
                                      Authentication authentication) throws IOException {
 
-        Cookie cookie = new Cookie("authenticationSuccess", "true");
+        Cookie cookie = new Cookie("loginSuccess", "true");
         httpServletResponse.addCookie(cookie);
 
         String redirectUrl = httpServletRequest.getParameter("redirectUrl");
